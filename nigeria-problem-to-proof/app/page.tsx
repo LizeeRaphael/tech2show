@@ -160,7 +160,7 @@ export default function Home() {
             SYSTEMS
           </div>
 
-          <h2 aria-label="Nigeria has problems.">
+          <h1 aria-label="Nigeria has problems.">
             <span className="line" aria-hidden="true">
               <span style={delay("0.25s")}>NIGERIA</span>
             </span>
@@ -172,7 +172,7 @@ export default function Home() {
             <span className="line" aria-hidden="true">
               <span style={delay("0.55s")}>PROBLEMS.</span>
             </span>
-          </h2>
+          </h1>
 
           <p className="hero-question rise" style={delay("0.95s")}>
             What if we stopped talking about them and started{" "}
