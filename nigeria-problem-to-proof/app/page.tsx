@@ -43,7 +43,8 @@ export default function Home() {
     let deleting = true
     const TYPE = 55
     const ERASE = 35
-    const HOLD = 1100
+    const HOLD_PROBLEMS = 5000 // PROBLEMS stays up this long after the first cycle
+    const HOLD_SOLUTIONS = 1100
 
     const tick = () => {
       const full = typeWords[word]
@@ -61,7 +62,7 @@ export default function Home() {
         setTyped(next.slice(0, count))
         if (count >= next.length) {
           deleting = true
-          timer = window.setTimeout(tick, HOLD)
+          timer = window.setTimeout(tick, next === typeWords[0] ? HOLD_PROBLEMS : HOLD_SOLUTIONS)
         } else {
           timer = window.setTimeout(tick, TYPE)
         }

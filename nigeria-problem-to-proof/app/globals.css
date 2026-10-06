@@ -173,7 +173,7 @@ button { font: inherit; }
 
   .hero { flex-direction: column; align-items: stretch; justify-content: flex-start; min-height: 0; padding: 104px 7vw 0; }
   .hero-copy, .hero-actions { display: contents; }
-  .hero h1 { font-size: 16.4vw; margin: 24px 0 28px; }
+  .hero h1 { font-size: 15vw; margin: 24px 0 28px; }
   .hero-question { font-size: 17px; margin-bottom: 24px; }
   .cta-row { flex-direction: column; width: 100%; }
   .cta-row .primary-btn, .cta-row .ghost-btn { justify-content: space-between; padding: 19px 20px; }
