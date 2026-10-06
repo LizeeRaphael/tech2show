@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ArrowUpRight } from '../icons'
 
 export const metadata: Metadata = {
-  title: 'Registration is coming soon · Nigeria Problem to Proof',
-  description: 'Registration for Nigeria Problem to Proof is not open yet.',
+  title: 'Coming soon · Nigeria Problem to Proof',
+  description: 'Registration and the show for Nigeria Problem to Proof are not open yet.',
 }
 
 export default function ComingSoon() {
@@ -21,16 +22,17 @@ export default function ComingSoon() {
       </header>
 
       <section className="soon-body">
-        <div className="eyebrow"><span className="pulse" /> SEASON 01 · REGISTRATION</div>
+        <div className="eyebrow"><span className="pulse" /> SEASON 01 · COMING SOON</div>
         <h1>
-          REGISTRATION<br />IS <em>COMING</em><br />SOON.
+          SEASON 01<br />IS <em>COMING</em><br />SOON.
         </h1>
         <p className="soon-copy">
-          The programme is not open for sign-ups yet. When registration opens, this is where
-          builders will join. The problems are not going anywhere.
+          Registration is not open and the show is not live yet. When Season 01 begins, this is
+          where builders will register and where you will be able to watch. The problems are not
+          going anywhere.
         </p>
         <div>
-          <Link className="ghost-btn" href="/"><span>BACK TO HOMEPAGE</span><b>↗</b></Link>
+          <Link className="ghost-btn" href="/"><span>BACK TO HOMEPAGE</span><ArrowUpRight /></Link>
         </div>
       </section>
 

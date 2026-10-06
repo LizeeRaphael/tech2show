@@ -13,5 +13,12 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>
+  return (
+    <html lang="en">
+      <head>
+        <link rel="preload" href="/fonts/InterDisplay-Bold.woff" as="font" type="font/woff" crossOrigin="anonymous" />
+      </head>
+      <body>{children}</body>
+    </html>
+  )
 }
