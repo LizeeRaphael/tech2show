@@ -1,425 +1,205 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 
-const problems = [
-  {
-    label: "Education",
-    text: "What if better access to learning could start with one practical solution?",
-  },
-  {
-    label: "Healthcare",
-    text: "What if technology could remove one more barrier between people and care?",
-  },
-  {
-    label: "Agriculture",
-    text: "What if a real problem in the field became the starting point for a useful product?",
-  },
-  {
-    label: "Transport",
-    text: "What if everyday movement could become safer, simpler and more predictable?",
-  },
-  {
-    label: "Business",
-    text: "What if the tools Nigerian businesses need were built around how they actually work?",
-  },
-];
+const problemWords = ['AGRICULTURE', 'FOOD SYSTEMS', 'EDUCATION', 'HEALTHCARE', 'ENERGY']
 
-const journey = ["Problem", "Build", "Test", "Deploy", "Prove"];
+const stages = [
+  { name: 'PROBLEM', note: 'A real Nigerian problem, understood before anything is built.' },
+  { name: 'BUILD', note: 'Builders answer it with technology.' },
+  { name: 'TEST', note: 'The solution meets the people it is meant for.' },
+  { name: 'DEPLOY', note: 'It leaves the demo and goes into real use.' },
+  { name: 'PROVE', note: 'Evidence that it works, not a pitch.' },
+]
+
+const delay = (s: string) => ({ '--d': s }) as CSSProperties
 
 export default function Home() {
-  const [problemIndex, setProblemIndex] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [wordIndex, setWordIndex] = useState(0)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const heroRef = useRef<HTMLElement | null>(null)
+  const mainRef = useRef<HTMLElement | null>(null)
 
+  // Rotating sector label
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setProblemIndex((current) => (current + 1) % problems.length);
-    }, 3200);
+    const id = window.setInterval(() => {
+      setWordIndex((current) => (current + 1) % problemWords.length)
+    }, 2200)
+    return () => window.clearInterval(id)
+  }, [])
 
-    return () => window.clearInterval(timer);
-  }, []);
+  // Very subtle hero image drift on scroll
+  useEffect(() => {
+    const hero = heroRef.current
+    if (!hero) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-  const activeProblem = problems[problemIndex];
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const y = window.scrollY
+      if (y < window.innerHeight * 1.2) {
+        hero.style.setProperty('--py', `${(y * 0.07).toFixed(1)}px`)
+      }
+    }
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (frame) window.cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  // One-time reveals for the sections below the hero
+  useEffect(() => {
+    const main = mainRef.current
+    if (!main) return
+    const targets = Array.from(main.querySelectorAll<HTMLElement>('[data-reveal]'))
+
+    if (
+      typeof IntersectionObserver === 'undefined' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      targets.forEach((el) => el.classList.add('in'))
+      return
+    }
+
+    main.classList.add('armed')
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+    )
+    targets.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <main>
-      {/* ================= NAVBAR ================= */}
+    <main ref={mainRef}>
+      <nav className="nav">
+        <a className="brand" href="#top" aria-label="Nigeria Problem to Proof home">
+          <span>NIGERIA</span>
+          <span>PROBLEM <i>TO</i> PROOF</span>
+        </a>
 
-      <header className="site-header">
-        <Link
-          href="/"
-          className="brand"
-          aria-label="Nigeria Problem to Proof home"
-        >
-          <span className="brand-mark">NP</span>
-
-          <span>
-            <strong>Nigeria Problem</strong>
-            <small>to Proof</small>
-          </span>
-        </Link>
-
-        <button
-          className="menu-toggle"
-          aria-label="Toggle navigation"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          <span />
-          <span />
-        </button>
-
-        <nav className={menuOpen ? "nav open" : "nav"}>
-          <a
-            href="#concept"
-            onClick={() => setMenuOpen(false)}
-          >
-            The Concept
-          </a>
-
-          <a
-            href="#journey"
-            onClick={() => setMenuOpen(false)}
-          >
-            How It Works
-          </a>
-
-          <a
-            href="#problems"
-            onClick={() => setMenuOpen(false)}
-          >
-            Problems
-          </a>
-
-          <Link
-            className="nav-cta"
-            href="/coming-soon"
-            onClick={() => setMenuOpen(false)}
-          >
-            Register Now
-          </Link>
-        </nav>
-      </header>
-
-      {/* ================= HERO ================= */}
-
-      <section className="hero">
-        <div className="hero-media" aria-hidden="true">
-
-          {/* YOUR IMAGE GOES HERE:
-              /public/hero-tv-tech.png
-          */}
-          <img
-            src="/hero-tv-tech.png"
-            alt=""
-          />
-
-          <div className="hero-vignette" />
-          <div className="hero-grid" />
+        <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+          <a href="#why" onClick={() => setMenuOpen(false)}>The Problem</a>
+          <a href="#journey" onClick={() => setMenuOpen(false)}>The Journey</a>
+          <a href="#builders" onClick={() => setMenuOpen(false)}>Builders</a>
         </div>
 
-        <div className="hero-content">
+        <Link className="nav-cta" href="/coming-soon">Register <span>↗</span></Link>
+        <button
+          className="menu"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? '×' : '☰'}
+        </button>
+      </nav>
 
-          <p className="eyebrow">
-            <span />
-            SEASON 01 · COMING SOON
-          </p>
+      <section id="top" className="hero" ref={heroRef}>
+        <div className="hero-noise" />
+        <div className="hero-grid" />
 
-          <h1>
-            Nigeria has
-            <span> problems.</span>
+        <div className="hero-media">
+          <div className="hero-media-inner">
+            <picture>
+              <source srcSet="/hero-tv-tech.webp" type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/hero-tv-tech.png"
+                alt="A woman watches a technology builder explain his work on a television in a dark living room."
+                width={1536}
+                height={1024}
+                fetchPriority="high"
+              />
+            </picture>
+          </div>
+        </div>
+
+        <div className="hero-copy">
+          <div className="eyebrow rise" style={delay('0.1s')}>
+            <span className="pulse" /> SEASON 01 · AGRICULTURE &amp; FOOD SYSTEMS
+          </div>
+
+          <h1 aria-label="Nigeria has problems.">
+            <span className="line" aria-hidden="true"><span style={delay('0.25s')}>NIGERIA</span></span>
+            <span className="line" aria-hidden="true"><span style={delay('0.4s')}><em>HAS</em></span></span>
+            <span className="line" aria-hidden="true"><span style={delay('0.55s')}>PROBLEMS.</span></span>
           </h1>
 
-          <p className="hero-subtitle">
-            What if we stopped talking about them and started building
-            the solutions?
+          <p className="hero-question rise" style={delay('0.95s')}>
+            What if we stopped talking about them and started <strong>building</strong>?
           </p>
 
-          <div className="hero-actions">
-
-            <Link
-              href="/coming-soon"
-              className="primary-button"
-            >
-              Join the journey
-              <span>↗</span>
-            </Link>
-
-            <a
-              href="#journey"
-              className="text-button"
-            >
-              See how it works
-              <span>↓</span>
-            </a>
-
-          </div>
-        </div>
-
-        {/* Bottom status */}
-
-        <div className="hero-status">
-
-          <span className="live-dot" />
-
-          <span>Real problems</span>
-
-          <i />
-
-          <span>Real builders</span>
-
-          <i />
-
-          <span>Real proof</span>
-
-        </div>
-
-        {/* Scroll */}
-
-        <a
-          href="#concept"
-          className="scroll-cue"
-          aria-label="Scroll to concept"
-        >
-          <span>Scroll to explore</span>
-          <b>↓</b>
-        </a>
-      </section>
-
-      {/* ================= CONCEPT ================= */}
-
-      <section
-        id="concept"
-        className="statement-section"
-      >
-        <div className="section-kicker">
-          THE IDEA
-        </div>
-
-        <h2>
-          A problem is not
-          <em> the end.</em>
-          <br />
-          It is where we start.
-        </h2>
-
-        <p>
-          Nigeria Problem to Proof is a national technology and
-          innovation programme built around real Nigerian challenges —
-          taking ideas from problem discovery to working, tested and
-          proven solutions.
-        </p>
-      </section>
-
-      {/* ================= PROBLEMS ================= */}
-
-      <section
-        id="problems"
-        className="problems-section"
-      >
-        <div className="section-heading">
-
-          <div>
-            <div className="section-kicker">
-              START WITH REALITY
+          <div className="hero-actions rise" style={delay('1.1s')}>
+            <Link className="primary-btn" href="/coming-soon"><span>REGISTER NOW</span><b>↗</b></Link>
+            <div className="rotating-problem">
+              <small>THE NEXT PROBLEM TO PROVE COULD BE IN</small>
+              <strong key={wordIndex} className="swap">{problemWords[wordIndex]}</strong>
             </div>
-
-            <h2>
-              What problem would
-              <span> you</span> solve?
-            </h2>
           </div>
+        </div>
 
-          <p>
-            Problems from everyday Nigeria become opportunities to build.
+        <div className="scroll-cue"><span>SCROLL TO EXPLORE</span><i>↓</i></div>
+      </section>
+
+      <section id="why" className="concept">
+        <p className="section-kicker" data-reveal>THE PROBLEM</p>
+        <div className="concept-grid">
+          <h2 data-reveal>THE PROGRAMME<br /><span>STARTS WITH A PROBLEM.</span></h2>
+          <p className="concept-copy" data-reveal>
+            We bring real Nigerian problems into the room, give builders the chance to solve them
+            with technology, and follow the journey from idea to something that can actually be
+            tested and proven.
           </p>
-
-        </div>
-
-        <div className="problem-stage">
-
-          <div className="problem-number">
-            0{problemIndex + 1}
-          </div>
-
-          <div>
-            <p className="problem-label">
-              {activeProblem.label}
-            </p>
-
-            <h3>
-              {activeProblem.text}
-            </h3>
-          </div>
-
-          <div className="problem-dots">
-
-            {problems.map((problem, index) => (
-              <button
-                key={problem.label}
-                aria-label={`Show ${problem.label}`}
-                className={
-                  index === problemIndex
-                    ? "active"
-                    : ""
-                }
-                onClick={() => setProblemIndex(index)}
-              />
-            ))}
-
-          </div>
-
         </div>
       </section>
 
-      {/* ================= JOURNEY ================= */}
-
-      <section
-        id="journey"
-        className="journey-section"
-      >
-        <div className="section-kicker">
-          THE JOURNEY
-        </div>
-
-        <h2>
-          From <span>problem</span> to proof.
-        </h2>
-
-        <div className="journey-track">
-
-          {journey.map((step, index) => (
-            <div
-              className="journey-step"
-              key={step}
-            >
-              <div className="step-index">
-                0{index + 1}
-              </div>
-
-              <div className="step-line" />
-
-              <h3>{step}</h3>
-
-              <p>
-                {index === 0 &&
-                  "Find and understand a real challenge."}
-
-                {index === 1 &&
-                  "Turn insight into a working solution."}
-
-                {index === 2 &&
-                  "Put it in front of the people it serves."}
-
-                {index === 3 &&
-                  "Take the solution into the real world."}
-
-                {index === 4 &&
-                  "Show that it creates meaningful value."}
-              </p>
-            </div>
+      <section id="journey" className="journey">
+        <p className="section-kicker" data-reveal>THE JOURNEY</p>
+        <ol className="track" data-reveal>
+          <li className="track-line" aria-hidden="true"><span className="track-fill" /></li>
+          {stages.map((stage, i) => (
+            <li className="stage" key={stage.name} style={{ '--i': i } as CSSProperties}>
+              <span className="dot" aria-hidden="true" />
+              <small>0{i + 1}</small>
+              <strong>{stage.name}</strong>
+              <p>{stage.note}</p>
+            </li>
           ))}
-
-        </div>
+        </ol>
       </section>
 
-      {/* ================= BUILDERS ================= */}
-
-      <section className="builders-section">
-
-        <div className="builders-copy">
-
-          <div className="section-kicker">
-            THE BUILDERS
+      <section id="builders" className="finale">
+        <div className="finale-inner">
+          <div data-reveal>
+            <p className="section-kicker">THE BUILDERS</p>
+            <h2>DON&apos;T JUST<br /><span>HAVE AN IDEA.</span></h2>
           </div>
-
-          <h2>
-            Don't just watch the problem.
-            <span> Build.</span>
-          </h2>
-
-          <p>
-            Developers, designers, researchers, entrepreneurs,
-            students and problem-solvers can become part of the journey.
-          </p>
-
-          <Link
-            href="/coming-soon"
-            className="primary-button"
-          >
-            I want to build
-            <span>↗</span>
-          </Link>
-
+          <div className="finale-side" data-reveal>
+            <p>Bring the skill, curiosity and stubbornness to build something that can survive the real world.</p>
+            <Link className="primary-btn" href="/coming-soon"><span>REGISTER NOW</span><b>↗</b></Link>
+            <small>Registration opens soon.</small>
+          </div>
         </div>
-
-        <div className="builders-card">
-
-          <span>01</span>
-          <strong>REAL PEOPLE</strong>
-
-          <p>
-            Building for people who experience the problem.
-          </p>
-
-          <span>02</span>
-          <strong>REAL USERS</strong>
-
-          <p>
-            Testing ideas outside the room.
-          </p>
-
-          <span>03</span>
-          <strong>REAL PROOF</strong>
-
-          <p>
-            Evidence that the solution works.
-          </p>
-
-        </div>
-
+        <footer className="foot">
+          <span>NIGERIA PROBLEM <i>TO</i> PROOF</span>
+          <span>Season 01 · Coming soon</span>
+        </footer>
       </section>
-
-      {/* ================= FINAL CTA ================= */}
-
-      <section className="final-cta">
-
-        <div className="section-kicker">
-          SEASON 01
-        </div>
-
-        <h2>
-          Ready to build?
-        </h2>
-
-        <p>
-          Registration is coming soon. Be early.
-        </p>
-
-        <Link
-          href="/coming-soon"
-          className="primary-button large"
-        >
-          Register now
-          <span>↗</span>
-        </Link>
-
-      </section>
-
-      {/* ================= FOOTER ================= */}
-
-      <footer className="footer">
-
-        <span>
-          © 2026 Nigeria Problem to Proof
-        </span>
-
-        <span>
-          Real problems. Real builders. Real proof.
-        </span>
-
-      </footer>
     </main>
-  );
+  )
 }

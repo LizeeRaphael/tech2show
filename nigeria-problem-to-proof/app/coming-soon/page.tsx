@@ -1,57 +1,40 @@
-import Link from "next/link";
+import type { Metadata } from 'next'
+import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Registration is coming soon · Nigeria Problem to Proof',
+  description: 'Registration for Nigeria Problem to Proof is not open yet.',
+}
 
 export default function ComingSoon() {
   return (
-    <main className="coming-page">
-      <div className="coming-glow" />
+    <main className="soon">
+      <div className="soon-grid" />
+      <div className="soon-orb" />
 
-      <Link href="/" className="back-link">
-        ← Back to home
-      </Link>
-
-      <div className="coming-content">
-        <p className="eyebrow">
-          <span />
-          SEASON 01 · COMING SOON
-        </p>
-
-        <div className="coming-code">
-          NP
-          <span>→</span>P
-        </div>
-
-        <h1>
-          You're
-          <span> early.</span>
-        </h1>
-
-        <p>
-          Registration for Nigeria Problem to Proof is getting ready. We are
-          bringing real Nigerian problems, real builders and real proof
-          together.
-        </p>
-
-        <div className="coming-path">
-          <span>PROBLEM</span>
-
-          <b>→</b>
-
-          <span>BUILD</span>
-
-          <b>→</b>
-
-          <span>TEST</span>
-
-          <b>→</b>
-
-          <span>PROVE</span>
-        </div>
-
-        <Link href="/" className="primary-button">
-          Explore the concept
-          <span>↗</span>
+      <header className="soon-head">
+        <Link className="brand" href="/" aria-label="Nigeria Problem to Proof home">
+          <span>NIGERIA</span>
+          <span>PROBLEM <i>TO</i> PROOF</span>
         </Link>
-      </div>
+        <Link className="soon-back-link" href="/">Back to homepage</Link>
+      </header>
+
+      <section className="soon-body">
+        <div className="eyebrow"><span className="pulse" /> SEASON 01 · REGISTRATION</div>
+        <h1>
+          REGISTRATION<br />IS <em>COMING</em><br />SOON.
+        </h1>
+        <p className="soon-copy">
+          The programme is not open for sign-ups yet. When registration opens, this is where
+          builders will join. The problems are not going anywhere.
+        </p>
+        <div>
+          <Link className="ghost-btn" href="/"><span>BACK TO HOMEPAGE</span><b>↗</b></Link>
+        </div>
+      </section>
+
+      <footer className="soon-foot">NIGERIA PROBLEM TO PROOF</footer>
     </main>
-  );
+  )
 }
