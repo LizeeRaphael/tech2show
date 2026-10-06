@@ -15,11 +15,14 @@ const stages = [
   { name: 'PROVE', note: 'Evidence that it works, not a pitch.' },
 ]
 
+const typeWords = ['PROBLEMS', 'SOLUTIONS']
+
 const delay = (s: string) => ({ '--d': s }) as CSSProperties
 
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [typed, setTyped] = useState(typeWords[0])
   const heroRef = useRef<HTMLElement | null>(null)
   const mainRef = useRef<HTMLElement | null>(null)
 
@@ -29,6 +32,44 @@ export default function Home() {
       setWordIndex((current) => (current + 1) % problemWords.length)
     }, 2200)
     return () => window.clearInterval(id)
+  }, [])
+
+  // Typewriter on the hero headline word: PROBLEMS <-> SOLUTIONS (~2s per word)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let timer = 0
+    let word = 0
+    let count = typeWords[0].length
+    let deleting = true
+    const TYPE = 55
+    const ERASE = 35
+    const HOLD = 1100
+
+    const tick = () => {
+      const full = typeWords[word]
+      if (deleting) {
+        count -= 1
+        setTyped(full.slice(0, count))
+        if (count <= 0) {
+          deleting = false
+          word = (word + 1) % typeWords.length
+        }
+        timer = window.setTimeout(tick, ERASE)
+      } else {
+        count += 1
+        const next = typeWords[word]
+        setTyped(next.slice(0, count))
+        if (count >= next.length) {
+          deleting = true
+          timer = window.setTimeout(tick, HOLD)
+        } else {
+          timer = window.setTimeout(tick, TYPE)
+        }
+      }
+    }
+    // let the intro animation finish, then hold PROBLEMS briefly before the first erase
+    timer = window.setTimeout(tick, 2200)
+    return () => window.clearTimeout(timer)
   }, [])
 
   // Very subtle hero image drift on scroll
@@ -138,7 +179,7 @@ export default function Home() {
           <h1 aria-label="Nigeria has problems.">
             <span className="line" aria-hidden="true"><span style={delay('0.25s')}>NIGERIA</span></span>
             <span className="line" aria-hidden="true"><span style={delay('0.4s')}><em>HAS</em></span></span>
-            <span className="line" aria-hidden="true"><span style={delay('0.55s')}>PROBLEMS.</span></span>
+            <span className="line" aria-hidden="true"><span style={delay('0.55s')} className="typed-line">{typed}<b className="caret" />.</span></span>
           </h1>
 
           <p className="hero-question rise" style={delay('0.95s')}>

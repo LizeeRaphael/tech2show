@@ -68,6 +68,10 @@ button { font: inherit; }
 .hero h1 { font-family: var(--display); font-size: clamp(64px, 9.2vw, 146px); line-height: 0.82; letter-spacing: -0.06em; margin: 32px 0 40px; font-weight: 700; }
 .hero h1 em { font-style: normal; color: var(--red); }
 .line { display: block; overflow: hidden; padding: 0.05em 0 0.03em; margin: -0.05em 0 -0.03em; }
+.typed-line { white-space: nowrap; }
+.caret { display: inline-block; width: 0.06em; height: 0.72em; margin: 0 0.04em 0 0.02em; background: var(--red); vertical-align: baseline; animation: caretBlink 1s steps(1) infinite; }
+@keyframes caretBlink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .caret { display: none; } }
 .line > span { display: block; animation: lineUp 1.1s var(--ease) both; animation-delay: var(--d, 0s); }
 @keyframes lineUp { from { transform: translateY(108%); } }
 .rise { animation: rise 0.9s var(--ease) both; animation-delay: var(--d, 0s); }
