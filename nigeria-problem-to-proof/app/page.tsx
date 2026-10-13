@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { ArrowDown, ArrowUpRight, MenuIcon, PlayIcon } from './icons'
+import { Logo, pageLinks } from './site'
 
 const problemWords = ['AGRICULTURE', 'FOOD SYSTEMS', 'EDUCATION', 'HEALTHCARE', 'ENERGY']
 
@@ -43,8 +44,7 @@ export default function Home() {
     let deleting = true
     const TYPE = 55
     const ERASE = 35
-    const HOLD_PROBLEMS = 5000 // PROBLEMS stays up this long after the first cycle
-    const HOLD_SOLUTIONS = 1100
+    const HOLD = 1100
 
     const tick = () => {
       const full = typeWords[word]
@@ -62,7 +62,7 @@ export default function Home() {
         setTyped(next.slice(0, count))
         if (count >= next.length) {
           deleting = true
-          timer = window.setTimeout(tick, next === typeWords[0] ? HOLD_PROBLEMS : HOLD_SOLUTIONS)
+          timer = window.setTimeout(tick, HOLD)
         } else {
           timer = window.setTimeout(tick, TYPE)
         }
@@ -131,14 +131,16 @@ export default function Home() {
     <main ref={mainRef}>
       <nav className="nav">
         <a className="brand" href="#top" aria-label="Nigeria Problem to Proof home">
-          <span>NIGERIA</span>
-          <span>PROBLEM <i>TO</i> PROOF</span>
+          <Logo />
         </a>
 
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
           <a href="#why" onClick={() => setMenuOpen(false)}>The Problem</a>
           <a href="#journey" onClick={() => setMenuOpen(false)}>The Journey</a>
           <a href="#builders" onClick={() => setMenuOpen(false)}>Builders</a>
+          {pageLinks.map((l) => (
+            <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</Link>
+          ))}
         </div>
 
         <Link className="nav-cta" href="/coming-soon">Register <ArrowUpRight /></Link>
@@ -266,7 +268,7 @@ export default function Home() {
           </div>
         </div>
         <footer className="foot">
-          <span>NIGERIA PROBLEM <i>TO</i> PROOF</span>
+          <Link className="foot-logo" href="/" aria-label="Nigeria Problem to Proof home"><Logo /></Link>
           <span>Season 01 · Coming soon</span>
         </footer>
       </section>

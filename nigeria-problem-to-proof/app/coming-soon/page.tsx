@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight } from '../icons'
+import { Logo } from '../site'
 
 export const metadata: Metadata = {
   title: 'Coming soon · Nigeria Problem to Proof',
@@ -15,8 +16,7 @@ export default function ComingSoon() {
 
       <header className="soon-head">
         <Link className="brand" href="/" aria-label="Nigeria Problem to Proof home">
-          <span>NIGERIA</span>
-          <span>PROBLEM <i>TO</i> PROOF</span>
+          <Logo />
         </Link>
         <Link className="soon-back-link" href="/">Back to homepage</Link>
       </header>
@@ -36,7 +36,7 @@ export default function ComingSoon() {
         </div>
       </section>
 
-      <footer className="soon-foot">NIGERIA PROBLEM TO PROOF</footer>
+      <footer className="soon-foot"><Link className="foot-logo" href="/" aria-label="Nigeria Problem to Proof home"><Logo /></Link></footer>
     </main>
   )
 }
